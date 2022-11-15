@@ -22,7 +22,7 @@ workflows:
       - architect/go-build:
           context: architect
           name: go-build
-          binary: capi-garbage-collector
+          binary: capg-garbage-collector
           resource_class: xlarge
           requires:
             - unit-tests
@@ -32,8 +32,8 @@ workflows:
 
       - architect/push-to-docker:
           context: architect
-          name: push-capi-garbage-collector-to-quay
-          image: "quay.io/giantswarm/capi-garbage-collector"
+          name: push-capg-garbage-collector-to-quay
+          image: "quay.io/giantswarm/capg-garbage-collector"
           username_envar: "QUAY_USERNAME"
           password_envar: "QUAY_PASSWORD"
           requires:
@@ -44,8 +44,8 @@ workflows:
               only: /^v.*/
       - architect/push-to-docker:
           context: "architect"
-          name: push-capi-garbage-collector-to-docker
-          image: "docker.io/giantswarm/capi-garbage-collector"
+          name: push-capg-garbage-collector-to-docker
+          image: "docker.io/giantswarm/capg-garbage-collector"
           username_envar: "DOCKER_USERNAME"
           password_envar: "DOCKER_PASSWORD"
           requires:
@@ -58,7 +58,7 @@ workflows:
       # an image gets pushed to the Aliyun registry.
       - architect/push-to-docker:
           name: push-to-aliyun
-          image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/capi-garbage-collector"
+          image: "registry-intl.cn-shanghai.aliyuncs.com/giantswarm/capg-garbage-collector"
           username_envar: "ALIYUN_USERNAME"
           password_envar: "ALIYUN_PASSWORD"
           requires:
@@ -76,10 +76,10 @@ workflows:
           name: push-to-app-catalog
           app_catalog: "control-plane-catalog"
           app_catalog_test: "control-plane-test-catalog"
-          chart: "capi-garbage-collector"
+          chart: "capg-garbage-collector"
           requires:
-          - push-capi-garbage-collector-to-quay
-          - push-capi-garbage-collector-to-docker
+          - push-capg-garbage-collector-to-quay
+          - push-capg-garbage-collector-to-docker
           filters:
             # Trigger the job also on git tag.
             tags:
@@ -87,11 +87,11 @@ workflows:
       - architect/push-to-app-collection:
           context: architect
           name: push-to-capa-app-collection
-          app_name: "capi-garbage-collector"
+          app_name: "capg-garbage-collector"
           app_collection_repo: "capa-app-collection"
           requires:
-            - push-capi-garbage-collector-to-docker
-            - push-capi-garbage-collector-to-quay
+            - push-capg-garbage-collector-to-docker
+            - push-capg-garbage-collector-to-quay
             - push-to-app-catalog
           filters:
             branches:
