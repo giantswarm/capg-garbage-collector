@@ -19,7 +19,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"os"
 
 	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
@@ -30,7 +29,6 @@ import (
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
-	capa "sigs.k8s.io/cluster-api-provider-aws/api/v1beta1"
 	capi "sigs.k8s.io/cluster-api/api/v1beta1"
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
@@ -38,8 +36,8 @@ import (
 
 	capg "sigs.k8s.io/cluster-api-provider-gcp/api/v1beta1"
 
-	"github.com/giantswarm/capi-garbage-collector/controllers"
-	"github.com/giantswarm/capi-garbage-collector/pkg/gcp/compute/routes"
+	"github.com/giantswarm/capg-garbage-collector/controllers"
+	"github.com/giantswarm/capg-garbage-collector/pkg/gcp/compute/routes"
 	// +kubebuilder:scaffold:imports
 )
 
@@ -51,8 +49,6 @@ var (
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
 	utilruntime.Must(capi.AddToScheme(scheme))
-	utilruntime.Must(capa.AddToScheme(scheme))
-
 	utilruntime.Must(capg.AddToScheme(scheme))
 
 	// +kubebuilder:scaffold:scheme
@@ -62,15 +58,11 @@ func main() {
 	var metricsAddr string
 	var enableLeaderElection bool
 	var probeAddr string
-	var managementClusterName string
-	var managementClusterNamespace string
 	flag.StringVar(&metricsAddr, "metrics-bind-address", ":8080", "The address the metric endpoint binds to.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
 	flag.BoolVar(&enableLeaderElection, "leader-elect", false,
 		"Enable leader election for controller manager. "+
 			"Enabling this will ensure there is only one active controller manager.")
-	flag.StringVar(&managementClusterName, "management-cluster-name", "", "The name of the Cluster CR for the management cluster")
-	flag.StringVar(&managementClusterNamespace, "management-cluster-namespace", "", "The namespace of the Cluster CR for the management cluster")
 	opts := zap.Options{
 		Development: true,
 	}
@@ -78,11 +70,6 @@ func main() {
 	flag.Parse()
 
 	ctrl.SetLogger(zap.New(zap.UseFlagOptions(&opts)))
-
-	if managementClusterName == "" || managementClusterNamespace == "" {
-		setupLog.Error(fmt.Errorf("management-cluster-name and management-cluster-namespace required"), "Management Cluster details required")
-		os.Exit(1)
-	}
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{
 		Scheme:                 scheme,
@@ -105,13 +92,6 @@ func main() {
 	})
 	if err != nil {
 		setupLog.Error(err, "unable to start manager")
-		os.Exit(1)
-	}
-
-	controller := controllers.NewGarbageCollectorController(mgr.GetClient())
-	err = controller.SetupWithManager(mgr)
-	if err != nil {
-		setupLog.Error(err, "failed to setup controller", "controller", "Cluster")
 		os.Exit(1)
 	}
 

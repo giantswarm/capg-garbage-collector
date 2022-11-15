@@ -15,8 +15,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/controller/controllerutil"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	"github.com/giantswarm/capi-garbage-collector/controllers"
-	"github.com/giantswarm/capi-garbage-collector/controllers/controllersfakes"
+	"github.com/giantswarm/capg-garbage-collector/controllers"
+	"github.com/giantswarm/capg-garbage-collector/controllers/controllersfakes"
 )
 
 var _ = Describe("GCPCluster Reconciliation", func() {

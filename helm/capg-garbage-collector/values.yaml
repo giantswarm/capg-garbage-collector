@@ -4,7 +4,7 @@ project:
 
 image:
   registry: quay.io
-  name: giantswarm/capi-garbage-collector
+  name: giantswarm/capg-garbage-collector
   tag: "[[ .Version ]]"
   pullPolicy: IfNotPresent
 

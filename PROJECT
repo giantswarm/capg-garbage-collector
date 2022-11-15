@@ -1,8 +1,8 @@
 domain: giantswarm.io
 layout:
 - go.kubebuilder.io/v4-alpha
-projectName: capi-garbage-collector
-repo: github.com/giantswarm/capi-garbage-collector
+projectName: capg-garbage-collector
+repo: github.com/giantswarm/capg-garbage-collector
 resources:
 - controller: true
   domain: giantswarm.io

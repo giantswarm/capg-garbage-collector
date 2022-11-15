@@ -1,6 +1,6 @@
 
 # Image URL to use all building/pushing image targets
-IMG ?= docker.io/giantswarm/capi-garbage-collector:dev
+IMG ?= docker.io/giantswarm/capg-garbage-collector:dev
 
 # Substitute colon with space - this creates a list.
 # Word selects the n-th element of the list
@@ -8,8 +8,6 @@ IMAGE_REPO = $(word 1,$(subst :, ,$(IMG)))
 IMAGE_TAG = $(word 2,$(subst :, ,$(IMG)))
 
 CLUSTER ?= acceptance
-MANAGEMENT_CLUSTER_NAME ?= test-mc
-MANAGEMENT_CLUSTER_NAMESPACE ?= test
 
 ENVTEST_K8S_VERSION = 1.23
 ##@ Development
@@ -20,7 +18,7 @@ lint-imports: goimports ## Run go vet against code.
 
 .PHONY: create-acceptance-cluster
 create-acceptance-cluster: kind
-	CLUSTER=$(CLUSTER) IMG=$(IMG) MANAGEMENT_CLUSTER_NAMESPACE=$(MANAGEMENT_CLUSTER_NAMESPACE) ./scripts/ensure-kind-cluster.sh
+	CLUSTER=$(CLUSTER) IMG=$(IMG) ./scripts/ensure-kind-cluster.sh
 
 .PHONY: install-cluster-api
 install-cluster-api: clusterctl
@@ -45,8 +43,6 @@ test-integration: ginkgo envtest ## Run integration tests
 test-acceptance: KUBECONFIG=$(HOME)/.kube/$(CLUSTER).yml
 test-acceptance: ginkgo deploy-acceptance-cluster ## Run acceptance testst
 	KUBECONFIG="$(KUBECONFIG)" \
-	MANAGEMENT_CLUSTER_NAME="$(MANAGEMENT_CLUSTER_NAME)" \
-	MANAGEMENT_CLUSTER_NAMESPACE="$(MANAGEMENT_CLUSTER_NAMESPACE)" \
 	$(GINKGO) -r -randomize-all --randomize-suites --slow-spec-threshold "30s" tests/acceptance
 
 .PHONY: test-all
@@ -61,24 +57,22 @@ endif
 .PHONY: render
 render: architect
 	mkdir -p $(shell pwd)/helm/rendered
-	cp -r $(shell pwd)/helm/capi-garbage-collector $(shell pwd)/helm/rendered/
-	$(ARCHITECT) helm template --dir $(shell pwd)/helm/rendered/capi-garbage-collector
+	cp -r $(shell pwd)/helm/capg-garbage-collector $(shell pwd)/helm/rendered/
+	$(ARCHITECT) helm template --dir $(shell pwd)/helm/rendered/capg-garbage-collector
 
 .PHONY: deploy
 deploy: manifests render ensure-deploy-envs ## Deploy controller to the K8s cluster specified in ~/.kube/config.
 	KUBECONFIG=$(KUBECONFIG) helm upgrade --install \
 		--namespace giantswarm \
 		--set image.tag=$(IMAGE_TAG) \
-		--set managementClusterName=$(MANAGEMENT_CLUSTER_NAME) \
-		--set managementClusterNamespace=$(MANAGEMENT_CLUSTER_NAMESPACE) \
 		--wait \
-		capi-garbage-collector helm/rendered/capi-garbage-collector
+		capg-garbage-collector helm/rendered/capg-garbage-collector
 
 .PHONY: undeploy
 undeploy: ## Undeploy controller from the K8s  specified in ~/.kube/config.
 	KUBECONFIG="$(KUBECONFIG)" helm uninstall \
 		--namespace giantswarm \
-		capi-garbage-collector
+		capg-garbage-collector
 
 ##@ App
 
@@ -87,7 +81,7 @@ ensure-schema-gen:
 
 .PHONY: schema-gen
 schema-gen: ensure-schema-gen ## Generates the values schema file
-	@cd helm/capi-garbage-collector && helm schema-gen values.yaml > values.schema.json
+	@cd helm/capg-garbage-collector && helm schema-gen values.yaml > values.schema.json
 
 ##@ Build Dependencies
 

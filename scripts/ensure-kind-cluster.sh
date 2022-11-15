@@ -4,9 +4,9 @@ set -euo pipefail
 
 readonly SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 readonly REPO_ROOT="${SCRIPT_DIR}/.."
-readonly CLUSTER=${CLUSTER:-"dns-operator-gcp-acceptance"}
+readonly CLUSTER=${CLUSTER:-"capg-garbage-collector-acceptance"}
 readonly KIND="${REPO_ROOT}/bin/kind"
-readonly IMG=${IMG:-quay.io/giantswarm/dns-operator-gcp:latest}
+readonly IMG=${IMG:-quay.io/giantswarm/capg-garbage-collector:latest}
 
 ensure_kind_cluster() {
   local cluster
