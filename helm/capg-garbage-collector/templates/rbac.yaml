@@ -9,12 +9,10 @@ rules:
       - cluster.x-k8s.io
       - infrastructure.cluster.x-k8s.io
     resources:
-      - machinepools
+      - gcpclusters
     verbs:
       - get
       - list
-      - patch
-      - update
       - watch
   - apiGroups:
       - ""
@@ -23,6 +21,14 @@ rules:
     verbs:
       - get
       - list
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - create
+      - update
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
