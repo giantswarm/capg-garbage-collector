@@ -1,0 +1,12 @@
+apiVersion: v2
+
+name: capg-garbage-collector
+description: Cleanups CAPG stuck resources
+
+version: "[[ .Version ]]"
+appVersion: "[[ .AppVersion ]]"
+
+home: https://github.com/giantswarm/capg-garbage-collector
+
+annotations:
+  application.giantswarm.io/team: hydra
