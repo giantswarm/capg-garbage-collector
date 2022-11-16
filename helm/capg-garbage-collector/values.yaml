@@ -8,9 +8,10 @@ image:
   tag: "[[ .Version ]]"
   pullPolicy: IfNotPresent
 
-
 pod:
   user:
     id: "65532"
   group:
     id: "65532"
+
+gcpProject: ""
