@@ -1,4 +1,4 @@
-[![CircleCI](https://circleci.com/gh/giantswarm/capi-garbage-collector.svg?style=shield)](https://circleci.com/gh/giantswarm/capi-garbage-collector)
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/giantswarm/capg-garbage-collector/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/giantswarm/capg-garbage-collector/tree/main)
 
 # capi-garbage-collector
 
