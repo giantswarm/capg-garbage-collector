@@ -7,15 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- Changed team annotation to phoenix from hydra
+
 ## [1.1.4] - 2022-09-26
 
 ### Fixed
 
 - updating the status condition to "true" when reconcile finished
-
-### Changed
-
-- Changed team annotation to phoenix from hydra
 
 
 ## [1.1.3] - 2022-09-23
