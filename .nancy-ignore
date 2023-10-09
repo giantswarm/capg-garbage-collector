@@ -1,2 +1,8 @@
 CVE-2022-29153
 CVE-2022-32149
+
+#pkg:golang/google.golang.org/grpc@v1.47.0
+CVE-2023-32731 until=2023-11-30
+
+#pkg:golang/k8s.io/apiserver@v0.24.2
+CVE-2020-8561 until=2023-11-30

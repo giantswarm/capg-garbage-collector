@@ -14,3 +14,7 @@ pod:
     id: "65532"
   group:
     id: "65532"
+
+global:
+  podSecurityStandards:
+    enforced: false
